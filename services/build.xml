@@ -1,0 +1,3 @@
+<project name="services" default="build">
+    <import file="../build-common.xml"/>
+</project>

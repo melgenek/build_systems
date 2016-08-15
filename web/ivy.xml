@@ -1,0 +1,11 @@
+<ivy-module version="2.0">
+    <info organisation="com.epam.melnyk" module="web">
+        <extends organisation="com.epam.melnyk" module="root" revision="1.0"/>
+    </info>
+
+    <dependencies>
+        <dependency org="javax.servlet" name="servlet-api" rev="2.5" conf="runtime->default"/>
+        <dependency org="com.epam.melnyk" name="services" rev="latest.integration" conf="local"/>
+    </dependencies>
+
+</ivy-module>

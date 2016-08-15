@@ -1,0 +1,22 @@
+<project name="web" default="build">
+
+    <property name="build.publish" value="false"/>
+
+    <import file="../build-common.xml"/>
+
+    <property name="war.file" location="../${artifacts.dir}/${ant.project.name}.war"/>
+    <property name="webapp.dir" location="src/main/webapp"/>
+    <property name="descriptor.file" location="${webapp.dir}/WEB-INF/web.xml"/>
+
+    <target name="assemble" depends="compileJava,processResources">
+        <copy todir="${local.lib.dir}" flatten="true">
+            <fileset refid="package.fileset"/>
+        </copy>
+        <war destfile="${war.file}" webxml="${descriptor.file}">
+            <fileset dir="${webapp.dir}"/>
+            <lib dir="${local.lib.dir}" includes="**/*.jar"/>
+            <classes dir="${output.dir}"/>
+        </war>
+    </target>
+
+</project>

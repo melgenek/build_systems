@@ -1,0 +1,35 @@
+<project name="root" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <import file="properties.xml"/>
+
+    <target name="init-maven" if="${use.maven}">
+        <path id="build-path">
+            <filelist dir=".">
+                <file name="utils/build.xml"/>
+                <file name="services/build.xml"/>
+                <file name="admin/build.xml"/>
+                <file name="web/build.xml"/>
+            </filelist>
+        </path>
+    </target>
+
+    <target name="init-ivy" if="${use.ivy}">
+        <ivy:buildlist reference="build-path">
+            <fileset dir="." includes="*/build.xml"/>
+        </ivy:buildlist>
+    </target>
+
+    <target name="clean" depends="init-ivy" description="Deletes build files">
+        <delete dir="${artifacts.dir}"/>
+        <subant target="clean" buildpathref="build-path"/>
+    </target>
+
+    <target name="compileJava" depends="init-ivy" description="Compiles source code">
+        <subant target="compileJava" buildpathref="build-path"/>
+    </target>
+
+    <target name="build" depends="init-ivy,init-maven" description="Creates distributable">
+        <subant target="build" buildpathref="build-path"/>
+    </target>
+
+</project>

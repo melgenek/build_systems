@@ -1,0 +1,15 @@
+<ivy-module version="2.0">
+    <info organisation="com.epam.melnyk" module="root"/>
+
+    <configurations>
+        <conf name="local"/>
+        <conf name="compile"/>
+        <conf name="runtime" extends="compile"/>
+        <conf name="test" extends="runtime"/>
+    </configurations>
+
+    <dependencies>
+        <dependency org="junit" name="junit" rev="4.12" conf="test->default"/>
+    </dependencies>
+
+</ivy-module>

@@ -1,0 +1,5 @@
+<ivy-module version="2.0">
+    <info organisation="com.epam.melnyk" module="utils">
+        <extends organisation="com.epam.melnyk" module="root" revision="1.0"/>
+    </info>
+</ivy-module>

@@ -1,0 +1,18 @@
+<project name="admin" default="build">
+
+    <property name="build.publish" value="false"/>
+
+    <import file="../build-common.xml"/>
+
+    <property name="admin.jar.file" location="../${artifacts.dir}/${ant.project.name}.jar"/>
+
+    <target name="assemble" depends="compileJava,processResources">
+        <jar destfile="${admin.jar.file}" basedir="${output.dir}">
+            <zipgroupfileset refid="package.fileset"/>
+            <manifest>
+                <attribute name="Main-Class" value="com.builders.admin.AdminEntryPoint"/>
+            </manifest>
+        </jar>
+    </target>
+
+</project>

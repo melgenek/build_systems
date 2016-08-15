@@ -1,0 +1,112 @@
+<project name="build-common" default="build" xmlns:ivy="antlib:org.apache.ivy.ant"
+         xmlns:maven="antlib:org.apache.maven.artifact.ant">
+
+    <import file="properties.xml"/>
+
+    <!--=============
+        Java targets
+    ===============-->
+    <target name="ivy-dependencies" description="Retrieve dependencies using Ivy" if="${use.ivy}">
+        <ivy:resolve/>
+
+        <ivy:cachepath pathid="compile.path" conf="runtime,local"/>
+        <ivy:cachepath pathid="test.path" conf="test,local"/>
+
+        <ivy:cachefileset setid="package.fileset" conf="compile,local"/>
+
+        <ivy:retrieve conf="compile,test" pattern="${lib.dir}/[artifact].[ext]"/>
+        <ivy:retrieve conf="local" pattern="${local.lib.dir}/[artifact].[ext]"/>
+    </target>
+
+    <target name="maven-dependencies" description="Retrieve dependencies using Maven" if="${use.maven}">
+        <maven:pom id="pom" file="pom.xml"/>
+
+        <maven:dependencies pathid="compile.path" scopes="compile,provided" pomRefId="pom"/>
+        <maven:dependencies pathid="test.path" scopes="compile,test,provided" pomRefId="pom"/>
+
+        <maven:dependencies filesetid="package.fileset" scopes="compile" pomRefId="pom"/>
+    </target>
+
+    <target name="processResources" description="Copy resources into classpath">
+        <copy todir="${output.dir}">
+            <fileset dir="${resources.dir}"/>
+        </copy>
+    </target>
+
+    <target name="compileJava" depends="ivy-dependencies,maven-dependencies" description="Compile code">
+        <mkdir dir="${output.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${output.dir}" includeantruntime="false" debug="true"
+               classpathref="compile.path"/>
+    </target>
+
+    <target name="assemble" depends="compileJava,processResources">
+        <jar destfile="${jar.file}" basedir="${output.dir}"/>
+    </target>
+
+    <!--=============
+        Test targets
+    ==============-->
+    <target name="processTestResources" description="Copy resources into classpath">
+        <copy todir="${test.output.dir}">
+            <fileset dir="${test.resources.dir}"/>
+        </copy>
+    </target>
+
+    <target name="compileTests" depends="compileJava" description="Compile tests">
+        <mkdir dir="${test.output.dir}"/>
+        <javac srcdir="${test.src.dir}" destdir="${test.output.dir}" includeantruntime="false" debug="true">
+            <classpath>
+                <path refid="test.path"/>
+                <pathelement path="${output.dir}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test" depends="compileTests,processTestResources" description="Run unit tests" unless="test.skip">
+        <mkdir dir="${test.reports.dir}"/>
+        <junit printsummary="yes" haltonfailure="yes">
+            <classpath>
+                <path refid="test.path"/>
+                <pathelement path="${output.dir}"/>
+                <pathelement path="${test.output.dir}"/>
+            </classpath>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${test.reports.dir}">
+                <fileset dir="${test.src.dir}">
+                    <include name="**/*Test*.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <!--=====================
+        Build and publish targets
+    =====================-->
+
+    <target name="publish" depends="assemble" if="${build.publish}">
+        <if>
+            <equals arg1="${use.maven}" arg2="true"/>
+            <then>
+                <maven:install file="${jar.file}">
+                    <maven:pom refid="pom"/>
+                </maven:install>
+            </then>
+        </if>
+        <if>
+            <equals arg1="${use.ivy}" arg2="true"/>
+            <then>
+                <ivy:publish resolver="local" artifactspattern="${build.dir}/[artifact].[ext]" update="true"/>
+            </then>
+        </if>
+    </target>
+
+    <target name="build" depends="test,assemble,publish" description="Create executable jar archive"/>
+
+    <!--=============
+        Clean target
+    =============-->
+    <target name="clean" description="Cleanup build files">
+        <delete dir="${build.dir}"/>
+    </target>
+
+</project>

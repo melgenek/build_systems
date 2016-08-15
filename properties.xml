@@ -1,0 +1,32 @@
+<project name="properties">
+
+    <property name="src.dir" location="src/main/java"/>
+    <property name="resources.dir" location="src/main/resources"/>
+    <property name="test.src.dir" location="src/test/java"/>
+    <property name="test.resources.dir" location="src/test/resources"/>
+    <property name="build.dir" location="target"/>
+    <property name="output.dir" location="${build.dir}/classes"/>
+    <property name="test.output.dir" location="${build.dir}/test-classes"/>
+    <property name="test.reports.dir" location="${build.dir}/test-reports"/>
+
+    <property name="artifacts.dir" value="artifacts"/>
+    <property name="lib.dir" location="${build.dir}/lib"/>
+    <property name="local.lib.dir" location="${lib.dir}/local"/>
+
+    <property name="jar.file" location="${build.dir}/${ant.project.name}.jar"/>
+
+    <property name="build.publish" value="true"/>
+
+    <property name="dependency.resolver" value="ivy"/>
+
+    <condition property="use.ivy">
+        <equals arg1="${dependency.resolver}" arg2="ivy"/>
+    </condition>
+
+    <condition property="use.maven">
+        <equals arg1="${dependency.resolver}" arg2="maven"/>
+    </condition>
+
+    <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="tools/ant-contrib-1.0b3.jar" />
+
+</project>
