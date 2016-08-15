@@ -1,0 +1,14 @@
+apply plugin: 'war'
+
+dependencies {
+    compile project(':services')
+    providedCompile 'javax.servlet:servlet-api:2.5'
+}
+
+war {
+    libsDirName = "${rootDir}/artifacts"
+    baseName = project.name
+    version = null
+}
+
+buildDir = 'target'

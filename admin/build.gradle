@@ -1,0 +1,15 @@
+dependencies {
+    compile project(':services')
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.builders.admin.AdminEntryPoint'
+        )
+    }
+    libsDirName = "${rootDir}/artifacts"
+    baseName = project.name
+    version = null
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
