@@ -1,3 +1,8 @@
+jar == admin \
+              |----> services ---> utils
+war == web   /
+
+
 ########
 ANT:
 1) Set path to ant
@@ -55,11 +60,17 @@ LINUX: ./gradlew build -x test
 
 
 ########
-Extra mile: use maven as a dependency resolver for ant
-1) Set path to ant
-WINDOWS: setantenv.bat
-LINUX: . ./setantenv.sh
+SBT:
+1) Set path to sbt
+WINDOWS: setsbtenv.bat
 
 2) Build project from root
-ant build -Ddependency.resolver=maven
+WINDOWS: sbt package
+
+Run tests:
+WINDOWS: sbt test
+
+3) Directory "artifacts" contains war and jar
+
+* To clean project use "sbt clean"
 
